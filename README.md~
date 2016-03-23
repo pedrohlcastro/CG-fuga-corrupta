@@ -3,8 +3,9 @@ TP01- CG- CEFET/MG 01/2016
 
 FEITO E TESTADO EM LINUX !!
 ```html
-
-	<img src="screenshots/jogo.png" />
+<p align="center">
+  <img src="screenshots/jogo.png" width="350"/>
+</p>
 ```
 
 	PARA RODAR O JOGO EM LINUX BASTA SEGUIR OS SEGUINTE PASSOS:
