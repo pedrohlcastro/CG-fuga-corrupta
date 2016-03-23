@@ -2,8 +2,7 @@
 TP01- CG- CEFET/MG 01/2016
 
 FEITO E TESTADO EM LINUX !!
-![Tela principal do jogo](https://github.com/pedrohlcastro/CG-fuga-corrupta/blob/master/screenshots/jogo.png?raw=true)
-
+<img src="https://github.com/pedrohlcastro/CG-fuga-corrupta/blob/master/screenshots/jogo.png?raw=true" />
 
 	PARA RODAR O JOGO EM LINUX BASTA SEGUIR OS SEGUINTE PASSOS:
 	
