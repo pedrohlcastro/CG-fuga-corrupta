@@ -129,12 +129,13 @@ void setupDesenho(int *imgFundo,int *imgVidas,int *imgMenu,int *imgComoJogar,int
   	}
 }
 void desenhaVidas(int *vidas,int *imgVidas){
-	GLint i,xVidas=200;
+	GLint i,posicao_xVidas=-50;
 	for(i=0;i<*vidas;i++){
 		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_BLEND);
 		glBindTexture(GL_TEXTURE_2D, *imgVidas);
 		glPushMatrix();
-			glTranslatef(xVidas ,280 ,0);
+			glTranslatef(posicao_xVidas ,280 ,0);
 			glBegin(GL_POLYGON);
 				glTexCoord2f(0, 0); glVertex2f(0,0);
 				glTexCoord2f(1, 0);	glVertex2f(50,0);
@@ -142,8 +143,9 @@ void desenhaVidas(int *vidas,int *imgVidas){
 	  			glTexCoord2f(0, 1);	glVertex2f(0,50);			
 			glEnd();
 			glDisable(GL_TEXTURE_2D);
+			glDisable(GL_BLEND);
 		glPopMatrix();
-		xVidas+=50;
+		posicao_xVidas+=50;
 	}
 }
 
