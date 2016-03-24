@@ -17,7 +17,7 @@ using namespace std;
 
 
 void setupDesenho(int *imgFundo,int *imgVidas,int *imgMenu,int *imgComoJogar,int *imgSelecaoPersonagem,
-					int *imgConfirmaPersonagem,int *imgPause,int *imgPerdeuVida,int *imgPerdeuJogo,int *imgGanhouJogo,int *imgConfirmaSaida){
+					int *imgConfirmaPersonagem,int *imgPause,int *imgPerdeuVida,int *imgPerdeuJogo,int *imgGanhouJogo,int *imgConfirmaSaida,int *imgConfirmaReboot){
 	*imgFundo = SOIL_load_OGL_texture(
 	    "img/tela_fundo.png",
 	    SOIL_LOAD_AUTO,
@@ -118,6 +118,15 @@ void setupDesenho(int *imgFundo,int *imgVidas,int *imgMenu,int *imgComoJogar,int
  	if (*imgConfirmaSaida == 0 ) {
     	printf("Erro carregando textura: '%s'\n", SOIL_last_result());
   	}
+  	*imgConfirmaReboot = SOIL_load_OGL_texture(
+	    "img/reinicio.png",
+	    SOIL_LOAD_AUTO,
+	    SOIL_CREATE_NEW_ID,
+	    SOIL_FLAG_INVERT_Y
+ 	);
+ 	if (*imgConfirmaReboot == 0 ) {
+    	printf("Erro carregando textura: '%s'\n", SOIL_last_result());
+  	}
 }
 void desenhaVidas(int *vidas,int *imgVidas){
 	GLint i,xVidas=200;
@@ -138,16 +147,16 @@ void desenhaVidas(int *vidas,int *imgVidas){
 	}
 }
 
-void desenhaFundo(int *imgFundo){
+void desenhaFundo(int *imgFundo,float *spriteBegin,float *spriteEnd){
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, *imgFundo);
 	glPushMatrix();
 		glTranslatef(-350 ,-350 ,0);
 		glBegin(GL_POLYGON);
-			glTexCoord2f(0, 0); glVertex2f(0,0);
-			glTexCoord2f(1, 0);	glVertex2f(700,0);
-  			glTexCoord2f(1, 1); glVertex2f(700,700);
-  			glTexCoord2f(0, 1);	glVertex2f(0,700);			
+			glTexCoord2f(*spriteBegin, 0); 						glVertex2f(0,0);
+			glTexCoord2f(*spriteEnd, 0);				glVertex2f(700,0);
+  			glTexCoord2f(*spriteEnd, 1); 				glVertex2f(700,700);
+  			glTexCoord2f(*spriteBegin, 1);							glVertex2f(0,700);			
 		glEnd();
 		glDisable(GL_TEXTURE_2D);
 	glPopMatrix();

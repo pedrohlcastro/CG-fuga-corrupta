@@ -20,15 +20,16 @@ using namespace std;
 GLint pause=0,vidas=3,tempo=1,reinicio=0;
 //variaveis de imagem
 GLint imgVidas,imgFundo,imgMenu,imgComoJogar,imgSelecaoPersonagem,imgConfirmaPersonagem,imgPause,imgPerdeuVida;
-GLint imgPerdeuJogo,imgGanhouJogo,imgConfirmaSaida;
+GLint imgPerdeuJogo,imgGanhouJogo,imgConfirmaSaida,imgConfirmaReboot;
 //variavel de tela
-enum Tela { MENU, JOGO,COMO_JOGAR,SELECIONAR_PERSONAGEM,CONFIRMAR_PERSONAGEM,PERDEU_VIDA,PAUSE, VITORIA, GAMEOVER,CONFIRMAR_SAIDA };
+enum Tela { MENU, JOGO,COMO_JOGAR,SELECIONAR_PERSONAGEM,CONFIRMAR_PERSONAGEM,PERDEU_VIDA,PAUSE, VITORIA, GAMEOVER,CONFIRMAR_SAIDA,CONFIRMAR_REBOOT };
 Tela telaAtual = MENU;
 //tamanho lado do quadrado
 GLint lado=100;
 //cheat cima,baixo,100
 GLint cheat=0;
-
+//sprite menu
+GLfloat spriteBegin=0,spriteEnd=0.5;
 /************************************************************/
 
 
@@ -53,7 +54,7 @@ GLint escolha_Personagem;
 void setup(){
 	setupInimigo(inimigo,&imgJapaPF,&imgJuizMoro);
 	setupDesenho(&imgFundo,&imgVidas,&imgMenu,&imgComoJogar,&imgSelecaoPersonagem,&imgConfirmaPersonagem,
-					&imgPause,&imgPerdeuVida,&imgPerdeuJogo,&imgGanhouJogo,&imgConfirmaSaida);
+					&imgPause,&imgPerdeuVida,&imgPerdeuJogo,&imgGanhouJogo,&imgConfirmaSaida,&imgConfirmaReboot);
 }
 
 //funçoes de desenhar na tela
@@ -62,11 +63,11 @@ void desenhaTela(){
 	glColor4f(1,1,1,1);
 	switch(telaAtual){
 		case MENU:
-			desenhaFundo(&imgMenu);
+			desenhaFundo(&imgMenu,&spriteBegin,&spriteEnd);
 			break;
 
 		case JOGO:
-			desenhaFundo(&imgFundo);
+			desenhaFundo(&imgFundo,&spriteBegin,&spriteEnd);
 			desenhaTempo(&tempo);
 			glColor4f(1,1,1,1);
 			desenhaVidas(&vidas,&imgVidas);
@@ -85,35 +86,38 @@ void desenhaTela(){
 			break;
 
 		case COMO_JOGAR:
-			desenhaFundo(&imgComoJogar);
+			desenhaFundo(&imgComoJogar,&spriteBegin,&spriteEnd);
 			break;
 
 		case SELECIONAR_PERSONAGEM:
-			desenhaFundo(&imgSelecaoPersonagem);
+			desenhaFundo(&imgSelecaoPersonagem,&spriteBegin,&spriteEnd);
 			break;
 
 		case CONFIRMAR_PERSONAGEM:
-			desenhaFundo(&imgConfirmaPersonagem);
+			desenhaFundo(&imgConfirmaPersonagem,&spriteBegin,&spriteEnd);
 			break;
 
 		case PERDEU_VIDA:
-			desenhaFundo(&imgPerdeuVida);
+			desenhaFundo(&imgPerdeuVida,&spriteBegin,&spriteEnd);
 			break;
 
 		case PAUSE:
-			desenhaFundo(&imgPause);
+			desenhaFundo(&imgPause,&spriteBegin,&spriteEnd);
 			break;
 
 		case VITORIA:
-			desenhaFundo(&imgGanhouJogo);
+			desenhaFundo(&imgGanhouJogo,&spriteBegin,&spriteEnd);
 			break;
 
 		case GAMEOVER:
-			desenhaFundo(&imgPerdeuJogo);
+			desenhaFundo(&imgPerdeuJogo,&spriteBegin,&spriteEnd);
 			break;
 
 		case CONFIRMAR_SAIDA:
-			desenhaFundo(&imgConfirmaSaida);
+			desenhaFundo(&imgConfirmaSaida,&spriteBegin,&spriteEnd);
+			break;
+		case CONFIRMAR_REBOOT:
+			desenhaFundo(&imgConfirmaReboot,&spriteBegin,&spriteEnd);
 			break;
 
 	}
@@ -121,14 +125,23 @@ void desenhaTela(){
 }
 
 //ajuste de tela
-void ajustaTela(int w,int h){
-	glViewport(0,0,w,h);
+void ajustaTela(int width,int height){
+	//codigo de terceiro =D
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	if(width>height){
+		glViewport((width-height)/2,0,height,height);
+	}
+	if(height>width){
+		glViewport(0,(height-width)/2,width,width);
+	}
+	glMatrixMode(GL_PROJECTION);
+	//FIM CODIGO DE TERCEIRO
+
 	//define eixo x,y
 	glOrtho(-350,350,-350,350,-1,1);
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	
 }
 //timer inimigo tele guiado
 void timerCriarInimigoTeleguiado(int idx){
@@ -192,29 +205,40 @@ void fazCair(){
 }
 
 //movimentos do personagem
-void movePersonagem(int tecla,int x,int y){
-	if(tecla==GLUT_KEY_LEFT){
-		if(personagem.x>-330 && pause==0)
-			personagem.x-=20;
+void teclasEspeciais(int tecla,int x,int y){
+	if(telaAtual==JOGO){
+		if(tecla==GLUT_KEY_LEFT){
+			if(personagem.x>-330 && pause==0)
+				personagem.x-=20;
+		}
+		if(tecla==GLUT_KEY_RIGHT){
+			if(personagem.x<250 && pause==0)
+				personagem.x+=20;
+		}
+		if(tecla==GLUT_KEY_UP && cheat==0){
+			cheat++;
+		}
+		if(tecla==GLUT_KEY_DOWN && cheat==1){
+			cheat++;
+		}
 	}
-	if(tecla==GLUT_KEY_RIGHT){
-		if(personagem.x<250 && pause==0)
-			personagem.x+=20;
+	if(telaAtual==MENU || telaAtual==SELECIONAR_PERSONAGEM || telaAtual==CONFIRMAR_REBOOT || telaAtual==CONFIRMAR_SAIDA){
+		if(tecla==GLUT_KEY_UP && spriteBegin==0.5){
+			spriteBegin=0;
+			spriteEnd=0.5;
+		}
+		if(tecla==GLUT_KEY_DOWN && spriteBegin==0){
+			spriteBegin+=spriteEnd;
+			spriteEnd+=spriteEnd;
+		}
 	}
-	if(tecla==GLUT_KEY_UP && cheat==0){
-		cheat++;
-	}
-	if(tecla==GLUT_KEY_DOWN && cheat==1){
-		cheat++;
-	}
-	//if(tecla){
-	//	cheat=0;
-	//}
 }
 
 //teclas de suporte no jogo
 void teclasJogo(unsigned char tecla,int x,int y){
 	if(tecla==27){
+		spriteBegin=0;
+		spriteEnd=(float)1/(float)2;
 		telaAtual=CONFIRMAR_SAIDA;
 		reinicio=1;
 		setup();
@@ -230,6 +254,18 @@ void teclasJogo(unsigned char tecla,int x,int y){
 		cheat++;
 	}
 	switch(telaAtual){
+		case MENU:
+			if(tecla==13 && spriteBegin==0){
+				spriteEnd=(float)1/(float)2;
+				spriteBegin=0;
+				telaAtual=SELECIONAR_PERSONAGEM;
+			}
+			if(tecla==13 && spriteBegin==0.5){
+				spriteEnd=1;
+				spriteBegin=0;
+				telaAtual=COMO_JOGAR;
+			}
+			break;
 		case JOGO:
 			if(tecla=='p' || tecla=='P'){ 
 				if(pause==0){
@@ -239,36 +275,41 @@ void teclasJogo(unsigned char tecla,int x,int y){
 			}
 				
 			if(tecla=='r' || tecla=='R'){
-				telaAtual=SELECIONAR_PERSONAGEM;
+				spriteBegin=0;
+				spriteEnd=(float)1/(float)2;
+				telaAtual=CONFIRMAR_REBOOT;
+				pause=1;
 				reinicio=1;
-				setup();
-				
+				//setup();
 			}
 			break;
 
 		case COMO_JOGAR:
 			if(tecla=='m'){
+				spriteBegin=0;
+				spriteEnd=(float)1/(float)2;
 				telaAtual=MENU;
-				
 			}
 
 		case SELECIONAR_PERSONAGEM:
-			if(tecla=='1'){
+			if(tecla==13 && spriteBegin==0){
 				escolha_Personagem=LULA;
-				printf("%d\n",escolha_Personagem );
+				spriteBegin=0;
+				spriteEnd=1;
 				telaAtual=CONFIRMAR_PERSONAGEM;
 				
 			}
-			if(tecla=='2'){
+			if(tecla==13 && spriteBegin==0.5){
 				escolha_Personagem=AECIO;
+				spriteEnd=1;
+				spriteBegin=0;
 				telaAtual=CONFIRMAR_PERSONAGEM;
 				printf("%d\n",escolha_Personagem );
-				
 			}
 			break;
 
 		case CONFIRMAR_PERSONAGEM:
-			if(tecla==13){//enter
+			if(tecla==13){
 				setup();
 				reinicio=0;
 				tempo=0;
@@ -277,6 +318,8 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				indexCair=0;
 				indexCriar=0;
 				devoCriar=1;
+				spriteBegin=0;
+				spriteEnd=1;
 				telaAtual=JOGO;
 				setupPersonagem(&imgPersonagem,&personagem.y,&escolha_Personagem);
 				//controle de tempo para criação
@@ -287,8 +330,9 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				
 			}
 			if(tecla=='m' || tecla=='M'){
+				spriteBegin=0;
+				spriteEnd=(float)1/(float)2;
 				telaAtual=MENU;
-				
 			}
 			break;
 
@@ -296,8 +340,6 @@ void teclasJogo(unsigned char tecla,int x,int y){
 			if(tecla==13){
 				telaAtual=JOGO;
 				rebootParcialTirandoVida();
-				
-
 			}
 			break;
 
@@ -314,48 +356,53 @@ void teclasJogo(unsigned char tecla,int x,int y){
 
 		case GAMEOVER:
 			if(tecla=='r' || tecla=='R'){
+				spriteBegin=0;
+				spriteEnd=(float)1/(float)2;
 				telaAtual=SELECIONAR_PERSONAGEM;
 				reinicio=1;
 				setup();
-				
 			}
 		case VITORIA:
 			if(tecla=='r' || tecla=='R'){
+				spriteBegin=0;
+				spriteEnd=(float)1/(float)2;
 				telaAtual=SELECIONAR_PERSONAGEM;
 				reinicio=1;
 				setup();
-				
 			}
 			break;
 		case CONFIRMAR_SAIDA:
-			if(tecla==13){
+			if(tecla==13 && spriteBegin==0){
 				exit(0);
 			}
-			if(tecla== 'm' || tecla=='M'){
+			if(tecla==13 && spriteBegin==0.5){
+				spriteEnd=(float)1/(float)2;
+				spriteBegin=0;
 				telaAtual=MENU;
 				reinicio=1;
 				setup();
-				
+			}
+			break;
+
+		case CONFIRMAR_REBOOT:
+			if(tecla==13 && spriteBegin==0){
+				spriteEnd=(float)1/(float)2;
+				spriteBegin=0;
+				telaAtual=SELECIONAR_PERSONAGEM;
+			}
+			if(tecla==13 && spriteBegin==0.5){
+				spriteEnd=1;
+				spriteBegin=0;
+				pause=0;
+				reinicio=0;
+				telaAtual=JOGO;
+				glutTimerFunc(tempoCriaNovoInimigo, timerCriar, 0);
+				glutTimerFunc(tempoCriaNovoInimigoTeleguiado,timerCriarInimigoTeleguiado,0);
+				glutTimerFunc(1009,timerTempo,0);
 			}
 			break;
 	}
 	glutPostRedisplay();
-}
-
-void mouseMenu(int button, int state, int x, int y){
-	//controle clique no MENU
-	GLint MenuXPlay=247,MenuYPlay=190;
-	GLint MenuXPlayFinal=479,MenuYPlayFinal=235;
-	GLint MenuXComo_Jogar=122,MenuYComo_Jogar=373;
-	GLint MenuXComo_JogarFinal=585, MenuYComo_JogarFinal=418;
-	if(telaAtual==MENU){
-		if((x>MenuXPlay && x<MenuXPlayFinal) && (y>MenuYPlay && y<MenuYPlayFinal)){
-			telaAtual=SELECIONAR_PERSONAGEM;
-		}
-		if((x>MenuXComo_Jogar && x<MenuXComo_JogarFinal) && (y>MenuYComo_Jogar && y<MenuYComo_JogarFinal)){
-			telaAtual=COMO_JOGAR;
-		}
-	}
 }
 
 int main(int argc, char **argv){
@@ -375,9 +422,9 @@ int main(int argc, char **argv){
 	//callbacks
 	glutDisplayFunc(desenhaTela);
 	glutReshapeFunc(ajustaTela);
-	glutMouseFunc(mouseMenu);
+	//glutMouseFunc(mouseMenu);
 	glutKeyboardFunc(teclasJogo);
-	glutSpecialFunc(movePersonagem);
+	glutSpecialFunc(teclasEspeciais);
 	glutIdleFunc(fazCair);
 	
 
