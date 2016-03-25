@@ -367,7 +367,6 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				pause=0;
 				telaAtual=JOGO;
 				glutTimerFunc(tempoCriaNovoInimigo, timerCriar, 0);
-				//glutTimerFunc(tempoCriaNovoInimigoTeleguiado,timerCriarInimigoTeleguiado,0);
 				glutTimerFunc(1009,timerTempo,0); 
 				
 			}
@@ -416,7 +415,6 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				reinicio=0;
 				telaAtual=JOGO;
 				glutTimerFunc(tempoCriaNovoInimigo, timerCriar, 0);
-				//glutTimerFunc(tempoCriaNovoInimigoTeleguiado,timerCriarInimigoTeleguiado,0);
 				glutTimerFunc(1009,timerTempo,0);
 			}
 			break;
