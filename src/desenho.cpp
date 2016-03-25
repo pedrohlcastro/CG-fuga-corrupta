@@ -17,7 +17,7 @@ using namespace std;
 
 
 void setupDesenho(int *imgFundo,int *imgVidas,int *imgMenu,int *imgComoJogar,int *imgSelecaoPersonagem,
-					int *imgConfirmaPersonagem,int *imgPause,int *imgPerdeuVida,int *imgPerdeuJogo,int *imgGanhouJogo,int *imgConfirmaSaida,int *imgConfirmaReboot){
+					int *imgDificuldade,int *imgPause,int *imgPerdeuVida,int *imgPerdeuJogo,int *imgGanhouJogo,int *imgConfirmaSaida,int *imgConfirmaReboot){
 	*imgFundo = SOIL_load_OGL_texture(
 	    "img/tela_fundo.png",
 	    SOIL_LOAD_AUTO,
@@ -64,13 +64,13 @@ void setupDesenho(int *imgFundo,int *imgVidas,int *imgMenu,int *imgComoJogar,int
  	if (*imgSelecaoPersonagem == 0 ) {
     	printf("Erro carregando textura: '%s'\n", SOIL_last_result());
   	}
-  	*imgConfirmaPersonagem = SOIL_load_OGL_texture(
-	    "img/confirma_personagem.png",
+  	*imgDificuldade = SOIL_load_OGL_texture(
+	    "img/modo.png",
 	    SOIL_LOAD_AUTO,
 	    SOIL_CREATE_NEW_ID,
 	    SOIL_FLAG_INVERT_Y
  	);
- 	if (*imgConfirmaPersonagem == 0 ) {
+ 	if (*imgDificuldade == 0 ) {
     	printf("Erro carregando textura: '%s'\n", SOIL_last_result());
   	}
   	*imgPause = SOIL_load_OGL_texture(

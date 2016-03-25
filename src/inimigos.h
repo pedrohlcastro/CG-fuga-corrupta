@@ -1,8 +1,6 @@
 #define JapaPF 1
 #define JuizMoro 2
 //controle de tempo
-#define tempoCriaNovoInimigo 1000
-#define tempoCriaNovoInimigoTeleguiado 10000
 struct Inimigo{
 	float x;
 	float y;

@@ -19,10 +19,10 @@ using namespace std;
 //variaveis controle
 GLint pause=0,vidas=3,tempo=1,reinicio=0;
 //variaveis de imagem
-GLint imgVidas,imgFundo,imgMenu,imgComoJogar,imgSelecaoPersonagem,imgConfirmaPersonagem,imgPause,imgPerdeuVida;
+GLint imgVidas,imgFundo,imgMenu,imgComoJogar,imgSelecaoPersonagem,imgDificuldade,imgPause,imgPerdeuVida;
 GLint imgPerdeuJogo,imgGanhouJogo,imgConfirmaSaida,imgConfirmaReboot;
 //variavel de tela
-enum Tela { MENU, JOGO,COMO_JOGAR,SELECIONAR_PERSONAGEM,CONFIRMAR_PERSONAGEM,PERDEU_VIDA,PAUSE, VITORIA, GAMEOVER,CONFIRMAR_SAIDA,CONFIRMAR_REBOOT };
+enum Tela { MENU, JOGO,COMO_JOGAR,SELECIONAR_PERSONAGEM,SELECIONAR_DIFICULDADE,PERDEU_VIDA,PAUSE, VITORIA, GAMEOVER,CONFIRMAR_SAIDA,CONFIRMAR_REBOOT };
 Tela telaAtual = MENU;
 //tamanho lado do quadrado
 GLint lado=100;
@@ -30,6 +30,9 @@ GLint lado=100;
 GLint cheat=0;
 //sprite menu
 GLfloat spriteBegin=0,spriteEnd=0.5;
+
+int tempoCriaNovoInimigo=1000;
+int tempoCriaNovoInimigoTeleguiado=10000;
 /************************************************************/
 
 
@@ -53,7 +56,7 @@ GLint escolha_Personagem;
 //setup inicial
 void setup(){
 	setupInimigo(inimigo,&imgJapaPF,&imgJuizMoro);
-	setupDesenho(&imgFundo,&imgVidas,&imgMenu,&imgComoJogar,&imgSelecaoPersonagem,&imgConfirmaPersonagem,
+	setupDesenho(&imgFundo,&imgVidas,&imgMenu,&imgComoJogar,&imgSelecaoPersonagem,&imgDificuldade,
 					&imgPause,&imgPerdeuVida,&imgPerdeuJogo,&imgGanhouJogo,&imgConfirmaSaida,&imgConfirmaReboot);
 }
 
@@ -93,8 +96,8 @@ void desenhaTela(){
 			desenhaFundo(&imgSelecaoPersonagem,&spriteBegin,&spriteEnd);
 			break;
 
-		case CONFIRMAR_PERSONAGEM:
-			desenhaFundo(&imgConfirmaPersonagem,&spriteBegin,&spriteEnd);
+		case SELECIONAR_DIFICULDADE:
+			desenhaFundo(&imgDificuldade,&spriteBegin,&spriteEnd);
 			break;
 
 		case PERDEU_VIDA:
@@ -222,7 +225,8 @@ void teclasEspeciais(int tecla,int x,int y){
 			cheat++;
 		}
 	}
-	if(telaAtual==MENU || telaAtual==SELECIONAR_PERSONAGEM || telaAtual==CONFIRMAR_REBOOT || telaAtual==CONFIRMAR_SAIDA){
+	if(telaAtual==MENU || telaAtual==SELECIONAR_PERSONAGEM || telaAtual==CONFIRMAR_REBOOT 
+					   || telaAtual==CONFIRMAR_SAIDA || telaAtual==SELECIONAR_DIFICULDADE){
 		if(tecla==GLUT_KEY_UP && spriteBegin==0.5){
 			spriteBegin=0;
 			spriteEnd=0.5;
@@ -295,22 +299,23 @@ void teclasJogo(unsigned char tecla,int x,int y){
 			if(tecla==13 && spriteBegin==0){
 				escolha_Personagem=LULA;
 				spriteBegin=0;
-				spriteEnd=1;
-				telaAtual=CONFIRMAR_PERSONAGEM;
+				spriteEnd=(float)1/(float)2;
+				telaAtual=SELECIONAR_DIFICULDADE;
 				
 			}
 			if(tecla==13 && spriteBegin==0.5){
 				escolha_Personagem=AECIO;
-				spriteEnd=1;
 				spriteBegin=0;
-				telaAtual=CONFIRMAR_PERSONAGEM;
+				spriteEnd=(float)1/(float)2;
+				telaAtual=SELECIONAR_DIFICULDADE;
 				printf("%d\n",escolha_Personagem );
 			}
 			break;
 
-		case CONFIRMAR_PERSONAGEM:
-			if(tecla==13){
+		case SELECIONAR_DIFICULDADE:
+			if(tecla==13 && spriteBegin==0 ){
 				setup();
+				pause=0;
 				reinicio=0;
 				tempo=0;
 				vidas=3;
@@ -320,20 +325,34 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				devoCriar=1;
 				spriteBegin=0;
 				spriteEnd=1;
+				tempoCriaNovoInimigo=1000;
+				tempoCriaNovoInimigoTeleguiado=10000;
 				telaAtual=JOGO;
-				setupPersonagem(&imgPersonagem,&personagem.y,&escolha_Personagem);
-				//controle de tempo para criação
-				glutTimerFunc(tempoCriaNovoInimigo, timerCriar, 0);
-				glutTimerFunc(tempoCriaNovoInimigoTeleguiado,timerCriarInimigoTeleguiado,0);
-				//timer para barra de tempo
-				glutTimerFunc(1009,timerTempo,0);
 				
 			}
-			if(tecla=='m' || tecla=='M'){
+			if(tecla==13 && spriteBegin==0.5){
+				setup();
+				pause=0;
+				reinicio=0;
+				tempo=0;
+				vidas=3;
+				telaAtual=JOGO;
+				indexCair=0;
+				indexCriar=0;
+				devoCriar=1;
 				spriteBegin=0;
-				spriteEnd=(float)1/(float)2;
-				telaAtual=MENU;
+				spriteEnd=1;
+				tempoCriaNovoInimigo=700;
+				tempoCriaNovoInimigoTeleguiado=5000;
+				telaAtual=JOGO;
 			}
+			setupPersonagem(&imgPersonagem,&personagem.y,&escolha_Personagem);
+			//controle de tempo para criação
+			glutTimerFunc(tempoCriaNovoInimigo, timerCriar, 0);
+			glutTimerFunc(tempoCriaNovoInimigoTeleguiado,timerCriarInimigoTeleguiado,0);
+			//timer para barra de tempo
+			glutTimerFunc(1009,timerTempo,0);
+
 			break;
 
 		case PERDEU_VIDA:
@@ -348,7 +367,7 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				pause=0;
 				telaAtual=JOGO;
 				glutTimerFunc(tempoCriaNovoInimigo, timerCriar, 0);
-				glutTimerFunc(tempoCriaNovoInimigoTeleguiado,timerCriarInimigoTeleguiado,0);
+				//glutTimerFunc(tempoCriaNovoInimigoTeleguiado,timerCriarInimigoTeleguiado,0);
 				glutTimerFunc(1009,timerTempo,0); 
 				
 			}
@@ -397,7 +416,7 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				reinicio=0;
 				telaAtual=JOGO;
 				glutTimerFunc(tempoCriaNovoInimigo, timerCriar, 0);
-				glutTimerFunc(tempoCriaNovoInimigoTeleguiado,timerCriarInimigoTeleguiado,0);
+				//glutTimerFunc(tempoCriaNovoInimigoTeleguiado,timerCriarInimigoTeleguiado,0);
 				glutTimerFunc(1009,timerTempo,0);
 			}
 			break;
