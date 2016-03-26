@@ -6,6 +6,7 @@
 #include <time.h>
 #include "inimigos.h"
 #include "personagem.h"
+#include "desenho.h"
 using namespace std;
 
 /*...............................
@@ -13,7 +14,7 @@ using namespace std;
 ...............................*/
 
 //desenha novo inimigo
-void desenhaQuadradoInimigo(Inimigo *inimigo, int *controleCair,int *indexCair,int indexCriar,int *lado,int *imgJapaPF,int *imgJuizMoro){
+void desenhaQuadradoInimigo(Inimigo *inimigo, int *controleCair,int *indexCair,int indexCriar,int *imgJapaPF,int *imgJuizMoro){
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	if(inimigo[indexCriar].tipo==JapaPF){
@@ -22,9 +23,9 @@ void desenhaQuadradoInimigo(Inimigo *inimigo, int *controleCair,int *indexCair,i
 			glTranslatef(inimigo[indexCriar].x , inimigo[indexCriar].y, 0);
 			glBegin(GL_POLYGON);
 				glTexCoord2f(0, 0); glVertex2f(0,0);
-				glTexCoord2f(1, 0);	glVertex2f(*lado,0);
-	  			glTexCoord2f(1, 1); glVertex2f(*lado,*lado);
-	  			glTexCoord2f(0, 1);	glVertex2f(0,*lado);			
+				glTexCoord2f(1, 0);	glVertex2f(inimigo[indexCriar].tamanho,0);
+	  			glTexCoord2f(1, 1); glVertex2f(inimigo[indexCriar].tamanho,inimigo[indexCriar].tamanho);
+	  			glTexCoord2f(0, 1);	glVertex2f(0,inimigo[indexCriar].tamanho);			
 			glEnd();
 			glDisable(GL_TEXTURE_2D);
 			glDisable(GL_BLEND);
@@ -36,9 +37,9 @@ void desenhaQuadradoInimigo(Inimigo *inimigo, int *controleCair,int *indexCair,i
 			glTranslatef(inimigo[indexCriar].x , inimigo[indexCriar].y, 0);
 			glBegin(GL_POLYGON);
 				glTexCoord2f(0, 0); glVertex2f(0,0);
-				glTexCoord2f(1, 0);	glVertex2f(*lado,0);
-	  			glTexCoord2f(1, 1); glVertex2f(*lado,*lado);
-	  			glTexCoord2f(0, 1);	glVertex2f(0,*lado);			
+				glTexCoord2f(1, 0);	glVertex2f(inimigo[indexCriar].tamanho,0);
+	  			glTexCoord2f(1, 1); glVertex2f(inimigo[indexCriar].tamanho,inimigo[indexCriar].tamanho);
+	  			glTexCoord2f(0, 1);	glVertex2f(0,inimigo[indexCriar].tamanho);			
 			glEnd();
 			glDisable(GL_TEXTURE_2D);
 			glDisable(GL_BLEND);
@@ -49,7 +50,7 @@ void desenhaQuadradoInimigo(Inimigo *inimigo, int *controleCair,int *indexCair,i
 }
 
 //desenha o movimento de queda
-void desenhaCairInimigo(Inimigo *inimigo,int *controleCair,int *indexCair,int *lado,int *imgJapaPF,int *imgJuizMoro){
+void desenhaCairInimigo(Inimigo *inimigo,int *controleCair,int *indexCair,int *imgJapaPF,int *imgJuizMoro){
 	GLint i;
 	for(i=0;i<*indexCair;i++){
 		glEnable(GL_TEXTURE_2D);
@@ -60,9 +61,9 @@ void desenhaCairInimigo(Inimigo *inimigo,int *controleCair,int *indexCair,int *l
 				glTranslatef(inimigo[controleCair[i]].x , inimigo[controleCair[i]].y, 0);
 				glBegin(GL_POLYGON);
 					glTexCoord2f(0, 0); glVertex2f(0,0);
-					glTexCoord2f(1, 0);	glVertex2f(*lado,0);
-					glTexCoord2f(1, 1); glVertex2f(*lado,*lado);
-					glTexCoord2f(0, 1);	glVertex2f(0,*lado);			
+					glTexCoord2f(1, 0);	glVertex2f(inimigo[i].tamanho,0);
+					glTexCoord2f(1, 1); glVertex2f(inimigo[i].tamanho,inimigo[i].tamanho);
+					glTexCoord2f(0, 1);	glVertex2f(0,inimigo[i].tamanho);			
 				glEnd();
 				glDisable(GL_TEXTURE_2D);
 				glDisable(GL_BLEND);
@@ -74,9 +75,9 @@ void desenhaCairInimigo(Inimigo *inimigo,int *controleCair,int *indexCair,int *l
 				glTranslatef(inimigo[controleCair[i]].x , inimigo[controleCair[i]].y, 0);
 				glBegin(GL_POLYGON);
 					glTexCoord2f(0, 0); glVertex2f(0,0);
-					glTexCoord2f(1, 0);	glVertex2f(*lado,0);
-					glTexCoord2f(1, 1); glVertex2f(*lado,*lado);
-					glTexCoord2f(0, 1);	glVertex2f(0,*lado);			
+					glTexCoord2f(1, 0);	glVertex2f(inimigo[i].tamanho,0);
+					glTexCoord2f(1, 1); glVertex2f(inimigo[i].tamanho,inimigo[i].tamanho);
+					glTexCoord2f(0, 1);	glVertex2f(0,inimigo[i].tamanho);			
 				glEnd();
 				glDisable(GL_TEXTURE_2D);
 				glDisable(GL_BLEND);
@@ -89,8 +90,9 @@ void desenhaCairInimigo(Inimigo *inimigo,int *controleCair,int *indexCair,int *l
 void setupInimigo(Inimigo *inimigo, int *imgJapaPF,int *imgJuizMoro){
 	GLint i;
 	for(i=0;i<1000;i++){
-		inimigo[i].x=(rand()%650)-350;
-		inimigo[i].y=200;
+		inimigo[i].x=(rand()%(2*TOPO_TELA-50))-TOPO_TELA;
+		inimigo[i].y=TOPO_TELA-150;
+		inimigo[i].tamanho=90;
 		inimigo[i].tipo=JapaPF;
 	}
 	*imgJuizMoro = SOIL_load_OGL_texture(

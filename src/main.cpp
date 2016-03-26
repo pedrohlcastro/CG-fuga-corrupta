@@ -3,7 +3,9 @@
 #include <SOIL/SOIL.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>
 #include <time.h>
+#include <SFML/Audio.hpp>
 #include "inimigos.h"
 #include "personagem.h"
 #include "desenho.h"
@@ -15,10 +17,8 @@ using namespace std;
 ...............................*/
 
 #define ENTER 13
-#define TOPO_TELA 350
-#define FUNDO_TELA -350
-#define ESQUERDA_TELA -350
-#define DIREITA_TELA 350
+#define ESC 27
+
 
 /*********************VARIAVEIS DE CONTROLE*******************/
 //variaveis controle
@@ -30,7 +30,7 @@ GLint imgPerdeuJogo,imgGanhouJogo,imgConfirmaSaida,imgConfirmaReboot;
 enum Tela { MENU, JOGO,COMO_JOGAR,SELECIONAR_PERSONAGEM,SELECIONAR_DIFICULDADE,PERDEU_VIDA,PAUSE, VITORIA, GAMEOVER,CONFIRMAR_SAIDA,CONFIRMAR_REBOOT };
 Tela telaAtual = MENU;
 //tamanho lado do quadrado
-GLint lado=100;
+//GLint lado=90;
 //cheat cima,baixo,100
 GLint cheat=0;
 //sprite menu
@@ -38,6 +38,9 @@ GLfloat spriteBegin=0,spriteEnd=0.5;
 //contorle tempo
 GLint tempoCriaNovoInimigo=1000;
 GLint tempoCriaNovoInimigoTeleguiado=10000;
+
+//musica
+sf::Music musicCheat,musicGAME_OVER,musicJOGO,musicWIN,musicMENUS;
 /************************************************************/
 
 
@@ -63,6 +66,13 @@ void setup(){
 	setupInimigo(inimigo,&imgJapaPF,&imgJuizMoro);
 	setupDesenho(&imgFundo,&imgVidas,&imgMenu,&imgComoJogar,&imgSelecaoPersonagem,&imgDificuldade,
 					&imgPause,&imgPerdeuVida,&imgPerdeuJogo,&imgGanhouJogo,&imgConfirmaSaida,&imgConfirmaReboot);
+	musicCheat.openFromFile("sounds/cheat.ogg");
+	musicGAME_OVER.openFromFile("sounds/gameover.ogg");
+	musicJOGO.openFromFile("sounds/jogo.ogg");
+	musicWIN.openFromFile("sounds/ganhou.ogg");
+	musicMENUS.openFromFile("sounds/menus.ogg");
+	musicMENUS.setLoop(true);
+	musicMENUS.play();
 }
 
 //funçoes de desenhar na tela
@@ -81,16 +91,16 @@ void desenhaTela(){
 			desenhaVidas(&vidas,&imgVidas);
 			//quadrados caindo...
 			if(devoCriar==1){
-				desenhaQuadradoInimigo(inimigo,controleCair,&indexCair,indexCriar,&lado,&imgJapaPF,&imgJuizMoro);
-				desenhaCairInimigo(inimigo,controleCair,&indexCair,&lado,&imgJapaPF,&imgJuizMoro);
+				desenhaQuadradoInimigo(inimigo,controleCair,&indexCair,indexCriar,&imgJapaPF,&imgJuizMoro);
+				desenhaCairInimigo(inimigo,controleCair,&indexCair,&imgJapaPF,&imgJuizMoro);
 				indexCriar++;
 				devoCriar=0;
 			}
 			else{
-				desenhaCairInimigo(inimigo,controleCair,&indexCair,&lado,&imgJapaPF,&imgJuizMoro);
+				desenhaCairInimigo(inimigo,controleCair,&indexCair,&imgJapaPF,&imgJuizMoro);
 			}
 			//personagem
-			desenhaPersonagem(personagem,&imgPersonagem,&lado);
+			desenhaPersonagem(personagem,&imgPersonagem);
 			break;
 
 		case COMO_JOGAR:
@@ -167,6 +177,9 @@ void timerTempo(int idx){
 		tempo++;
 		glutTimerFunc(1009,timerTempo,0);
 		if(tempo==70){
+			musicJOGO.stop();
+			musicWIN.play();
+			musicMENUS.play();
 			telaAtual=VITORIA;
 		}
 	}
@@ -196,17 +209,24 @@ void fazCair(){
 	GLint i;
 	if(pause==0 && reinicio==0){
 		for(i=0;i<indexCair;i++){
-			if(inimigo[controleCair[i]].tipo==JuizMoro && inimigo[controleCair[i]].y >= -100){
+			if(inimigo[controleCair[i]].tipo==JuizMoro && inimigo[controleCair[i]].y >= (-1.5*personagem.tamanho)){
 				inimigo[controleCair[i]].x=personagem.x;
 			}
 			cairInimigo(&indexCair,inimigo,controleCair,&velocidade,i);
-			if(cheat<5 && personagem.x+lado>inimigo[controleCair[i]].x && personagem.x<inimigo[controleCair[i]].x+lado && (personagem.y+lado>inimigo[controleCair[i]].y && personagem.y<inimigo[controleCair[i]].y)){
+			if(cheat<5 && personagem.x+personagem.tamanho>inimigo[controleCair[i]].x && personagem.x<inimigo[controleCair[i]].x+inimigo[controleCair[i]].tamanho && (personagem.y+personagem.tamanho>inimigo[controleCair[i]].y && personagem.y<inimigo[controleCair[i]].y)){
 				if(vidas>0){
+					musicJOGO.stop();
+					musicMENUS.play();
 					telaAtual=PERDEU_VIDA;
 					tempo=1;
 				}
-				else
+				else{
+					musicJOGO.stop();
+					musicGAME_OVER.play();
+					musicMENUS.play();
+					pause=1;
 					telaAtual=GAMEOVER;
+				}
 			}
 		}
 	}
@@ -218,11 +238,13 @@ void teclasEspeciais(int tecla,int x,int y){
 	//teclas controle personagem
 	if(telaAtual==JOGO){
 		if(tecla==GLUT_KEY_LEFT){
-			if(personagem.x>-330 && pause==0)
+			//330
+			if(personagem.x>ESQUERDA_TELA && pause==0)
 				personagem.x-=20;
 		}
+		//250
 		if(tecla==GLUT_KEY_RIGHT){
-			if(personagem.x<250 && pause==0)
+			if(personagem.x<DIREITA_TELA-personagem.tamanho && pause==0)
 				personagem.x+=20;
 		}
 		if(tecla==GLUT_KEY_UP && cheat==0){
@@ -250,12 +272,14 @@ void teclasEspeciais(int tecla,int x,int y){
 //teclas de suporte no jogo
 void teclasJogo(unsigned char tecla,int x,int y){
 	//saida com ESC
-	if(tecla==27){
+	if(tecla==ESC){
 		spriteBegin=0;
 		spriteEnd=(float)1/(float)2;
 		telaAtual=CONFIRMAR_SAIDA;
 		reinicio=1;
 		setup();
+		musicJOGO.stop();
+		musicMENUS.play();
 	}
 	//cheat =D
 	if(tecla && tecla!='1' && tecla!='0'){
@@ -265,10 +289,10 @@ void teclasJogo(unsigned char tecla,int x,int y){
 		cheat++;
 	}
 	if(tecla=='0' && (cheat==3 || cheat==4)){
+		if(cheat==4)
+			musicCheat.play();
 		cheat++;
 	}
-
-
 	switch(telaAtual){
 		case MENU:
 			if(tecla==ENTER && spriteBegin==0){
@@ -287,6 +311,7 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				if(pause==0){
 					pause=1;
 					telaAtual=PAUSE;
+					musicJOGO.pause();
 				}
 			}
 				
@@ -294,6 +319,7 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				spriteBegin=0;
 				spriteEnd=(float)1/(float)2;
 				telaAtual=CONFIRMAR_REBOOT;
+				musicJOGO.pause();
 				pause=1;
 				reinicio=1;
 			}
@@ -339,6 +365,8 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				tempoCriaNovoInimigo=1000;
 				tempoCriaNovoInimigoTeleguiado=10000;
 				telaAtual=JOGO;
+				musicMENUS.stop();
+				musicJOGO.play();
 				
 			}
 			if(tecla==ENTER && spriteBegin==0.5){
@@ -356,20 +384,23 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				tempoCriaNovoInimigo=700;
 				tempoCriaNovoInimigoTeleguiado=5000;
 				telaAtual=JOGO;
+				musicMENUS.stop();
+				musicJOGO.play();
 			}
-			setupPersonagem(&imgPersonagem,&personagem.y,&escolha_Personagem);
+			setupPersonagem(&imgPersonagem,&personagem,&escolha_Personagem);
 			//controle de tempo para criação
 			glutTimerFunc(tempoCriaNovoInimigo, timerCriar, 0);
 			glutTimerFunc(tempoCriaNovoInimigoTeleguiado,timerCriarInimigoTeleguiado,0);
 			//timer para barra de tempo
 			glutTimerFunc(1009,timerTempo,0);
-
 			break;
 
 		case PERDEU_VIDA:
 			if(tecla==ENTER){
 				telaAtual=JOGO;
 				rebootParcialTirandoVida();
+				musicMENUS.stop();
+				musicJOGO.play();
 			}
 			break;
 
@@ -378,7 +409,9 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				pause=0;
 				telaAtual=JOGO;
 				glutTimerFunc(tempoCriaNovoInimigo, timerCriar, 0);
-				glutTimerFunc(1009,timerTempo,0); 
+				glutTimerFunc(1009,timerTempo,0);
+				musicMENUS.stop();
+				musicJOGO.play();
 				
 			}
 			break;
@@ -418,6 +451,7 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				spriteEnd=(float)1/(float)2;
 				spriteBegin=0;
 				telaAtual=SELECIONAR_PERSONAGEM;
+				musicMENUS.play();
 			}
 			if(tecla==ENTER && spriteBegin==0.5){
 				spriteEnd=1;
@@ -427,6 +461,8 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				telaAtual=JOGO;
 				glutTimerFunc(tempoCriaNovoInimigo, timerCriar, 0);
 				glutTimerFunc(1009,timerTempo,0);
+				musicMENUS.stop();
+				musicJOGO.play();
 			}
 			break;
 	}
@@ -446,7 +482,8 @@ int main(int argc, char **argv){
 	glutCreateWindow("Fuga Corrupta");
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	setup();
-
+	
+	
 	//callbacks
 	glutDisplayFunc(desenhaTela);
 	glutReshapeFunc(ajustaTela);

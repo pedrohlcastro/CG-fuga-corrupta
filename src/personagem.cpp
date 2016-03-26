@@ -6,14 +6,17 @@
 #include <time.h>
 #include "inimigos.h"
 #include "personagem.h"
+#include "desenho.h"
 using namespace std;
 
 /*...............................
 ARQUIVO DE FUNÇÕES DO PERSONAGEM 
 ...............................*/
 
-void setupPersonagem(int *imgPersonagem,float *y,int *escolha){
-	*y=-315;
+void setupPersonagem(int *imgPersonagem,Personagem *personagem,int *escolha){
+	personagem->y = FUNDO_TELA + 35;
+	personagem->x = CENTRO;
+	personagem->tamanho = 90;
 	if(*escolha==LULA){
 		*imgPersonagem = SOIL_load_OGL_texture(
 		    "img/lula.png",
@@ -39,7 +42,7 @@ void setupPersonagem(int *imgPersonagem,float *y,int *escolha){
 	 
 }
 
-void desenhaPersonagem(Personagem personagem,int *imgPersonagem,int *lado){
+void desenhaPersonagem(Personagem personagem,int *imgPersonagem){
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glBindTexture(GL_TEXTURE_2D, *imgPersonagem);
@@ -47,9 +50,9 @@ void desenhaPersonagem(Personagem personagem,int *imgPersonagem,int *lado){
 		glTranslatef(personagem.x , personagem.y, 0);
 		glBegin(GL_POLYGON);
 			glTexCoord2f(0, 0); glVertex2f(0,0);
-			glTexCoord2f(1, 0);	glVertex2f(*lado,0);
-  			glTexCoord2f(1, 1); glVertex2f(*lado,*lado);
-  			glTexCoord2f(0, 1);	glVertex2f(0,*lado);			
+			glTexCoord2f(1, 0);	glVertex2f(personagem.tamanho,0);
+  			glTexCoord2f(1, 1); glVertex2f(personagem.tamanho,personagem.tamanho);
+  			glTexCoord2f(0, 1);	glVertex2f(0,personagem.tamanho);			
 		glEnd();
 		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_BLEND);
