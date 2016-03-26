@@ -14,6 +14,11 @@ using namespace std;
 ****ARQUIVO PRINCIPAL DO JOGO****
 ...............................*/
 
+#define ENTER 13
+#define TOPO_TELA 350
+#define FUNDO_TELA -350
+#define ESQUERDA_TELA -350
+#define DIREITA_TELA 350
 
 /*********************VARIAVEIS DE CONTROLE*******************/
 //variaveis controle
@@ -30,9 +35,9 @@ GLint lado=100;
 GLint cheat=0;
 //sprite menu
 GLfloat spriteBegin=0,spriteEnd=0.5;
-
-int tempoCriaNovoInimigo=1000;
-int tempoCriaNovoInimigoTeleguiado=10000;
+//contorle tempo
+GLint tempoCriaNovoInimigo=1000;
+GLint tempoCriaNovoInimigoTeleguiado=10000;
 /************************************************************/
 
 
@@ -142,10 +147,11 @@ void ajustaTela(int width,int height){
 	//FIM CODIGO DE TERCEIRO
 
 	//define eixo x,y
-	glOrtho(-350,350,-350,350,-1,1);
+	glOrtho(ESQUERDA_TELA,DIREITA_TELA,FUNDO_TELA,TOPO_TELA,-1,1);
 	glMatrixMode(GL_MODELVIEW);
 	
 }
+
 //timer inimigo tele guiado
 void timerCriarInimigoTeleguiado(int idx){
 	if(pause==0 && reinicio==0){
@@ -154,6 +160,7 @@ void timerCriarInimigoTeleguiado(int idx){
 		inimigo[indexCriar].tipo=JuizMoro;
 	}
 }
+
 //timer que controla barra de tempo
 void timerTempo(int idx){
 	if(pause==0 && reinicio==0){
@@ -203,12 +210,12 @@ void fazCair(){
 			}
 		}
 	}
-	//printf("%d\n",cheat );
 	glutPostRedisplay();
 }
 
 //movimentos do personagem
 void teclasEspeciais(int tecla,int x,int y){
+	//teclas controle personagem
 	if(telaAtual==JOGO){
 		if(tecla==GLUT_KEY_LEFT){
 			if(personagem.x>-330 && pause==0)
@@ -225,6 +232,8 @@ void teclasEspeciais(int tecla,int x,int y){
 			cheat++;
 		}
 	}
+
+	//teclas controle menus
 	if(telaAtual==MENU || telaAtual==SELECIONAR_PERSONAGEM || telaAtual==CONFIRMAR_REBOOT 
 					   || telaAtual==CONFIRMAR_SAIDA || telaAtual==SELECIONAR_DIFICULDADE){
 		if(tecla==GLUT_KEY_UP && spriteBegin==0.5){
@@ -240,14 +249,15 @@ void teclasEspeciais(int tecla,int x,int y){
 
 //teclas de suporte no jogo
 void teclasJogo(unsigned char tecla,int x,int y){
+	//saida com ESC
 	if(tecla==27){
 		spriteBegin=0;
 		spriteEnd=(float)1/(float)2;
 		telaAtual=CONFIRMAR_SAIDA;
 		reinicio=1;
 		setup();
-		//confirmar saida
 	}
+	//cheat =D
 	if(tecla && tecla!='1' && tecla!='0'){
 		cheat=0;
 	}
@@ -257,14 +267,16 @@ void teclasJogo(unsigned char tecla,int x,int y){
 	if(tecla=='0' && (cheat==3 || cheat==4)){
 		cheat++;
 	}
+
+
 	switch(telaAtual){
 		case MENU:
-			if(tecla==13 && spriteBegin==0){
+			if(tecla==ENTER && spriteBegin==0){
 				spriteEnd=(float)1/(float)2;
 				spriteBegin=0;
 				telaAtual=SELECIONAR_PERSONAGEM;
 			}
-			if(tecla==13 && spriteBegin==0.5){
+			if(tecla==ENTER && spriteBegin==0.5){
 				spriteEnd=1;
 				spriteBegin=0;
 				telaAtual=COMO_JOGAR;
@@ -284,7 +296,6 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				telaAtual=CONFIRMAR_REBOOT;
 				pause=1;
 				reinicio=1;
-				//setup();
 			}
 			break;
 
@@ -296,14 +307,14 @@ void teclasJogo(unsigned char tecla,int x,int y){
 			}
 
 		case SELECIONAR_PERSONAGEM:
-			if(tecla==13 && spriteBegin==0){
+			if(tecla==ENTER && spriteBegin==0){
 				escolha_Personagem=LULA;
 				spriteBegin=0;
 				spriteEnd=(float)1/(float)2;
 				telaAtual=SELECIONAR_DIFICULDADE;
 				
 			}
-			if(tecla==13 && spriteBegin==0.5){
+			if(tecla==ENTER && spriteBegin==0.5){
 				escolha_Personagem=AECIO;
 				spriteBegin=0;
 				spriteEnd=(float)1/(float)2;
@@ -313,7 +324,7 @@ void teclasJogo(unsigned char tecla,int x,int y){
 			break;
 
 		case SELECIONAR_DIFICULDADE:
-			if(tecla==13 && spriteBegin==0 ){
+			if(tecla==ENTER && spriteBegin==0 ){
 				setup();
 				pause=0;
 				reinicio=0;
@@ -330,7 +341,7 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				telaAtual=JOGO;
 				
 			}
-			if(tecla==13 && spriteBegin==0.5){
+			if(tecla==ENTER && spriteBegin==0.5){
 				setup();
 				pause=0;
 				reinicio=0;
@@ -356,7 +367,7 @@ void teclasJogo(unsigned char tecla,int x,int y){
 			break;
 
 		case PERDEU_VIDA:
-			if(tecla==13){
+			if(tecla==ENTER){
 				telaAtual=JOGO;
 				rebootParcialTirandoVida();
 			}
@@ -390,10 +401,10 @@ void teclasJogo(unsigned char tecla,int x,int y){
 			}
 			break;
 		case CONFIRMAR_SAIDA:
-			if(tecla==13 && spriteBegin==0){
+			if(tecla==ENTER && spriteBegin==0){
 				exit(0);
 			}
-			if(tecla==13 && spriteBegin==0.5){
+			if(tecla==ENTER && spriteBegin==0.5){
 				spriteEnd=(float)1/(float)2;
 				spriteBegin=0;
 				telaAtual=MENU;
@@ -403,12 +414,12 @@ void teclasJogo(unsigned char tecla,int x,int y){
 			break;
 
 		case CONFIRMAR_REBOOT:
-			if(tecla==13 && spriteBegin==0){
+			if(tecla==ENTER && spriteBegin==0){
 				spriteEnd=(float)1/(float)2;
 				spriteBegin=0;
 				telaAtual=SELECIONAR_PERSONAGEM;
 			}
-			if(tecla==13 && spriteBegin==0.5){
+			if(tecla==ENTER && spriteBegin==0.5){
 				spriteEnd=1;
 				spriteBegin=0;
 				pause=0;
