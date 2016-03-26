@@ -5,10 +5,10 @@ TP01- CG- CEFET/MG 01/2016
 
 <img align="center" src="https://github.com/pedrohlcastro/CG-fuga-corrupta/blob/master/screenshots/jogo.png?raw=true" width="300" height="300"/>
 
-<h2>BLIBLIOTECAS USADAS E COMO ADQUIRI-LAS:<h2>
+<h2>BLIBLIOTECAS USADAS E COMO ADQUIRI-LAS:</h2>
 
 	FORAM USADAS AS BIBLIOTECAS GLEW,FREEGLUT,SOIL,SFML(AUDIO).
-	<h1>CASO QUEIRA ADQUIRI-LAS PARA COMPILAR O PROGAMA:<h1>
+	<h1>CASO QUEIRA ADQUIRI-LAS PARA COMPILAR O PROGAMA:</h1>
 	
 		sudo apt-get install build-essential
 		sudo apt-get install freeglut3-dev
