@@ -96,7 +96,7 @@ void setupInimigo(Inimigo *inimigo, int *imgJapaPF,int *imgJuizMoro){
 		inimigo[i].tipo=JapaPF;
 	}
 	*imgJuizMoro = SOIL_load_OGL_texture(
-	    "img/moro.jpg",
+	    "img/moro.png",
 	    SOIL_LOAD_AUTO,
 	    SOIL_CREATE_NEW_ID,
 	    SOIL_FLAG_INVERT_Y

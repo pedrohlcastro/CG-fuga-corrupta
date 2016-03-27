@@ -179,7 +179,7 @@ void timerTempo(int idx){
 		if(tempo==70){
 			musicJOGO.stop();
 			musicWIN.play();
-			musicMENUS.play();
+			//musicMENUS.play();
 			telaAtual=VITORIA;
 		}
 	}
@@ -223,7 +223,7 @@ void fazCair(){
 				else{
 					musicJOGO.stop();
 					musicGAME_OVER.play();
-					musicMENUS.play();
+					//musicMENUS.play();
 					pause=1;
 					telaAtual=GAMEOVER;
 				}
