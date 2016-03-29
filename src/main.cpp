@@ -215,6 +215,8 @@ void fazCair(){
 			}
 			cairInimigo(&indexCair,inimigo,controleCair,&velocidade,i);
 			if(cheat<5 && personagem.x+personagem.tamanho>inimigo[controleCair[i]].x && personagem.x<inimigo[controleCair[i]].x+inimigo[controleCair[i]].tamanho && (personagem.y+personagem.tamanho>inimigo[controleCair[i]].y && personagem.y<inimigo[controleCair[i]].y)){
+				esquerda=false;
+				direita=false;
 				if(vidas>0){
 					musicJOGO.stop();
 					musicMENUS.play();
@@ -374,8 +376,8 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				devoCriar=1;
 				spriteBegin=0;
 				spriteEnd=1;
-				tempoCriaNovoInimigo=1000;
-				tempoCriaNovoInimigoTeleguiado=10000;
+				tempoCriaNovoInimigo=500;
+				tempoCriaNovoInimigoTeleguiado=5000;
 				telaAtual=JOGO;
 				musicMENUS.stop();
 				musicJOGO.play();
@@ -393,8 +395,8 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				devoCriar=1;
 				spriteBegin=0;
 				spriteEnd=1;
-				tempoCriaNovoInimigo=700;
-				tempoCriaNovoInimigoTeleguiado=5000;
+				tempoCriaNovoInimigo=400;
+				tempoCriaNovoInimigoTeleguiado=3000;
 				telaAtual=JOGO;
 				musicMENUS.stop();
 				musicJOGO.play();
