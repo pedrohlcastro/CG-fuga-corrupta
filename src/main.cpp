@@ -19,7 +19,6 @@ using namespace std;
 #define ENTER 13
 #define ESC 27
 
-
 /*********************VARIAVEIS DE CONTROLE*******************/
 //variaveis controle
 GLint pause=0,vidas=3,tempo=1,reinicio=0;
