@@ -92,7 +92,7 @@ void setupInimigo(Inimigo *inimigo, int *imgJapaPF,int *imgJuizMoro){
 	for(i=0;i<1000;i++){
 		inimigo[i].x=(rand()%(2*TOPO_TELA-50))-TOPO_TELA;
 		inimigo[i].y=TOPO_TELA-150;
-		inimigo[i].tamanho=90;
+		inimigo[i].tamanho=70;
 		inimigo[i].tipo=JapaPF;
 	}
 	*imgJuizMoro = SOIL_load_OGL_texture(

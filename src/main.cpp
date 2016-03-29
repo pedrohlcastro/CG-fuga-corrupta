@@ -38,7 +38,6 @@ GLfloat spriteBegin=0,spriteEnd=0.5;
 //contorle tempo
 GLint tempoCriaNovoInimigo=1000;
 GLint tempoCriaNovoInimigoTeleguiado=10000;
-
 //musica
 sf::Music musicCheat,musicGAME_OVER,musicJOGO,musicWIN,musicMENUS;
 /************************************************************/
@@ -71,6 +70,8 @@ void setup(){
 	musicJOGO.openFromFile("sounds/jogo.ogg");
 	musicWIN.openFromFile("sounds/ganhou.ogg");
 	musicMENUS.openFromFile("sounds/menus.ogg");
+	musicWIN.setVolume(50);
+	musicJOGO.setVolume(75);
 	musicMENUS.setLoop(true);
 	musicMENUS.play();
 }
@@ -209,7 +210,7 @@ void fazCair(){
 	GLint i;
 	if(pause==0 && reinicio==0){
 		for(i=0;i<indexCair;i++){
-			if(inimigo[controleCair[i]].tipo==JuizMoro && inimigo[controleCair[i]].y >= (-1.5*personagem.tamanho)){
+			if(inimigo[controleCair[i]].tipo==JuizMoro && inimigo[controleCair[i]].y >= (-1*personagem.tamanho)){
 				inimigo[controleCair[i]].x=personagem.x;
 			}
 			cairInimigo(&indexCair,inimigo,controleCair,&velocidade,i);
@@ -238,11 +239,9 @@ void teclasEspeciais(int tecla,int x,int y){
 	//teclas controle personagem
 	if(telaAtual==JOGO){
 		if(tecla==GLUT_KEY_LEFT){
-			//330
 			if(personagem.x>ESQUERDA_TELA && pause==0)
 				personagem.x-=20;
 		}
-		//250
 		if(tecla==GLUT_KEY_RIGHT){
 			if(personagem.x<DIREITA_TELA-personagem.tamanho && pause==0)
 				personagem.x+=20;
@@ -487,7 +486,6 @@ int main(int argc, char **argv){
 	//callbacks
 	glutDisplayFunc(desenhaTela);
 	glutReshapeFunc(ajustaTela);
-	//glutMouseFunc(mouseMenu);
 	glutKeyboardFunc(teclasJogo);
 	glutSpecialFunc(teclasEspeciais);
 	glutIdleFunc(fazCair);

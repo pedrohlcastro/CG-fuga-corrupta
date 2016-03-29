@@ -3,7 +3,9 @@ TP01- CG- CEFET/MG 01/2016
 
 <h2>FEITO E TESTADO EM LINUX !!</h2>
 
-<img align="center" src="https://github.com/pedrohlcastro/CG-fuga-corrupta/blob/master/screenshots/jogo.png?raw=true" width="300" height="300"/>
+<img align="center" src="https://github.com/pedrohlcastro/CG-fuga-corrupta/blob/master/screenshots/print1.png?raw=true" width="300" height="300"/>
+<img align="center" src="https://github.com/pedrohlcastro/CG-fuga-corrupta/blob/master/screenshots/print2.png?raw=true" width="300" height="300"/>
+<img align="center" src="https://github.com/pedrohlcastro/CG-fuga-corrupta/blob/master/screenshots/print3.png?raw=true" width="300" height="300"/>
 
 <h2>BLIBLIOTECAS E COMO RODAR:</h2>
 
