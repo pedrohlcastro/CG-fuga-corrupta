@@ -29,7 +29,8 @@ GLint imgPerdeuJogo,imgGanhouJogo,imgConfirmaSaida,imgConfirmaReboot;
 enum Tela { MENU, JOGO,COMO_JOGAR,SELECIONAR_PERSONAGEM,SELECIONAR_DIFICULDADE,PERDEU_VIDA,PAUSE, VITORIA, GAMEOVER,CONFIRMAR_SAIDA,CONFIRMAR_REBOOT };
 Tela telaAtual = MENU;
 //tamanho lado do quadrado
-//GLint lado=90;
+bool direita=false;
+bool esquerda=false;
 //cheat cima,baixo,100
 GLint cheat=0;
 //sprite menu
@@ -230,20 +231,33 @@ void fazCair(){
 			}
 		}
 	}
+	if(personagem.x>ESQUERDA_TELA && pause==0 && esquerda)
+		personagem.x-=10;
+	if(personagem.x<DIREITA_TELA-personagem.tamanho && pause==0 && direita)
+		personagem.x+=10;
+
 	glutPostRedisplay();
 }
-
+void pressionaTecla(int tecla,int x,int y){
+	//teclas controle personagem
+	if(telaAtual==JOGO){
+		if(tecla==GLUT_KEY_LEFT){
+			esquerda=false;
+		}
+		if(tecla==GLUT_KEY_RIGHT){
+			direita=false;
+		}
+	}
+}
 //movimentos do personagem
 void teclasEspeciais(int tecla,int x,int y){
 	//teclas controle personagem
 	if(telaAtual==JOGO){
-		if(tecla==GLUT_KEY_LEFT){
-			if(personagem.x>ESQUERDA_TELA && pause==0)
-				personagem.x-=20;
+		if(tecla==GLUT_KEY_LEFT){	
+			esquerda=true;
 		}
 		if(tecla==GLUT_KEY_RIGHT){
-			if(personagem.x<DIREITA_TELA-personagem.tamanho && pause==0)
-				personagem.x+=20;
+			direita=true;
 		}
 		if(tecla==GLUT_KEY_UP && cheat==0){
 			cheat++;
@@ -487,6 +501,7 @@ int main(int argc, char **argv){
 	glutReshapeFunc(ajustaTela);
 	glutKeyboardFunc(teclasJogo);
 	glutSpecialFunc(teclasEspeciais);
+	glutSpecialUpFunc(pressionaTecla);
 	glutIdleFunc(fazCair);
 	
 
