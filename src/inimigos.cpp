@@ -94,6 +94,7 @@ void setupInimigo(Inimigo *inimigo, int *imgJapaPF,int *imgJuizMoro){
 		inimigo[i].y=TOPO_TELA-150;
 		inimigo[i].tamanho=70;
 		inimigo[i].tipo=JapaPF;
+		inimigo[i].velocidade=4;
 	}
 	*imgJuizMoro = SOIL_load_OGL_texture(
 	    "img/moro.png",
@@ -115,6 +116,6 @@ void setupInimigo(Inimigo *inimigo, int *imgJapaPF,int *imgJuizMoro){
   	}
 }
 
-void cairInimigo(int *indexCair,Inimigo *inimigo,int *controleCair,float *velocidade,int i){
-	inimigo[controleCair[i]].y=inimigo[controleCair[i]].y-(*velocidade);
+void cairInimigo(int *indexCair,Inimigo *inimigo,int *controleCair,int i){
+	inimigo[controleCair[i]].y=inimigo[controleCair[i]].y-inimigo[i].velocidade;
 }

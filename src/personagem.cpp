@@ -17,6 +17,7 @@ void setupPersonagem(int *imgPersonagem,Personagem *personagem,int *escolha){
 	personagem->y = FUNDO_TELA + 35;
 	personagem->x = CENTRO;
 	personagem->tamanho = 90;
+	personagem->velocidade=8;
 	if(*escolha==LULA){
 		*imgPersonagem = SOIL_load_OGL_texture(
 		    "img/lula.png",

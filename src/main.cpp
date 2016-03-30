@@ -40,6 +40,9 @@ GLint tempoCriaNovoInimigo=1000;
 GLint tempoCriaNovoInimigoTeleguiado=10000;
 //musica
 sf::Music musicCheat,musicGAME_OVER,musicJOGO,musicWIN,musicMENUS;
+//controle de fps
+GLint gFramesPerSecond = 0;
+GLint primeiraTela=0;
 /************************************************************/
 
 
@@ -156,11 +159,9 @@ void ajustaTela(int width,int height){
 	}
 	glMatrixMode(GL_PROJECTION);
 	//FIM CODIGO DE TERCEIRO
-
 	//define eixo x,y
 	glOrtho(ESQUERDA_TELA,DIREITA_TELA,FUNDO_TELA,TOPO_TELA,-1,1);
 	glMatrixMode(GL_MODELVIEW);
-	
 }
 
 //timer inimigo tele guiado
@@ -180,7 +181,6 @@ void timerTempo(int idx){
 		if(tempo==70){
 			musicJOGO.stop();
 			musicWIN.play();
-			//musicMENUS.play();
 			telaAtual=VITORIA;
 		}
 	}
@@ -191,7 +191,6 @@ void timerCriar(int idx){
 	if(pause==0 && reinicio==0){
 		glutTimerFunc(tempoCriaNovoInimigo, timerCriar, 0);
 		devoCriar=1;
-		glutPostRedisplay();
 	}	
 }
 
@@ -205,15 +204,55 @@ void rebootParcialTirandoVida(){
 	devoCriar=1;
 }
 
+//função retirada de um forum openGL na internet
+void FPS(void) {
+	static GLint Frames = 0;         // frames averaged over 1000mS
+	static GLuint Clock;             // [milliSeconds]
+	static GLuint PreviousClock = 0; // [milliSeconds]
+	static GLuint NextClock = 0;     // [milliSeconds]
+	printf("FPS-->%d\n",gFramesPerSecond );
+	++Frames;
+	Clock = glutGet(GLUT_ELAPSED_TIME); //has limited resolution, so average over 1000mS
+	if ( Clock < NextClock ) 
+		return;
+
+	gFramesPerSecond = Frames/1; // store the averaged number of frames per second
+	
+	PreviousClock = Clock;
+	NextClock = Clock+1000; // 1000mS=1S in the future
+	Frames=0;
+}
+
 //funçao que atualiza tela e faz inimigos cairem
 void fazCair(){
 	GLint i;
+
+	//codigo da internet para controle de FPS
+	#define REGULATE_FPS
+	#ifdef REGULATE_FPS
+		static GLuint PreviousClock=glutGet(GLUT_ELAPSED_TIME);
+		static GLuint Clock=glutGet(GLUT_ELAPSED_TIME);
+		static GLfloat deltaT;
+		Clock = glutGet(GLUT_ELAPSED_TIME);
+		deltaT=Clock-PreviousClock;
+		//matem fps a 60
+		if (deltaT < 0){
+			return;
+		} 
+		else {
+			PreviousClock=Clock;
+		}
+	#endif
+	FPS(); //only call once per frame loop
+	//FIM CODIGO DE CONTROLE DE FPS*/
+
+
 	if(pause==0 && reinicio==0){
 		for(i=0;i<indexCair;i++){
-			if(inimigo[controleCair[i]].tipo==JuizMoro && inimigo[controleCair[i]].y >= (-1*personagem.tamanho)){
+			if(inimigo[controleCair[i]].tipo==JuizMoro && inimigo[controleCair[i]].y >= (-1.8*personagem.tamanho)){
 				inimigo[controleCair[i]].x=personagem.x;
 			}
-			cairInimigo(&indexCair,inimigo,controleCair,&velocidade,i);
+			cairInimigo(&indexCair,inimigo,controleCair,i);
 			if(cheat<5 && personagem.x+personagem.tamanho>inimigo[controleCair[i]].x && personagem.x<inimigo[controleCair[i]].x+inimigo[controleCair[i]].tamanho && (personagem.y+personagem.tamanho>inimigo[controleCair[i]].y && personagem.y<inimigo[controleCair[i]].y)){
 				esquerda=false;
 				direita=false;
@@ -226,7 +265,6 @@ void fazCair(){
 				else{
 					musicJOGO.stop();
 					musicGAME_OVER.play();
-					//musicMENUS.play();
 					pause=1;
 					telaAtual=GAMEOVER;
 				}
@@ -234,10 +272,9 @@ void fazCair(){
 		}
 	}
 	if(personagem.x>ESQUERDA_TELA && pause==0 && esquerda)
-		personagem.x-=10;
+		personagem.x-=personagem.velocidade;
 	if(personagem.x<DIREITA_TELA-personagem.tamanho && pause==0 && direita)
-		personagem.x+=10;
-
+		personagem.x+=personagem.velocidade;
 	glutPostRedisplay();
 }
 void pressionaTecla(int tecla,int x,int y){
@@ -359,7 +396,6 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				spriteBegin=0;
 				spriteEnd=(float)1/(float)2;
 				telaAtual=SELECIONAR_DIFICULDADE;
-				printf("%d\n",escolha_Personagem );
 			}
 			break;
 
@@ -376,8 +412,8 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				devoCriar=1;
 				spriteBegin=0;
 				spriteEnd=1;
-				tempoCriaNovoInimigo=500;
-				tempoCriaNovoInimigoTeleguiado=5000;
+				tempoCriaNovoInimigo=700;
+				tempoCriaNovoInimigoTeleguiado=8000;
 				telaAtual=JOGO;
 				musicMENUS.stop();
 				musicJOGO.play();
@@ -395,8 +431,8 @@ void teclasJogo(unsigned char tecla,int x,int y){
 				devoCriar=1;
 				spriteBegin=0;
 				spriteEnd=1;
-				tempoCriaNovoInimigo=400;
-				tempoCriaNovoInimigoTeleguiado=3000;
+				tempoCriaNovoInimigo=500;
+				tempoCriaNovoInimigoTeleguiado=4000;
 				telaAtual=JOGO;
 				musicMENUS.stop();
 				musicJOGO.play();
@@ -480,7 +516,6 @@ void teclasJogo(unsigned char tecla,int x,int y){
 			}
 			break;
 	}
-	glutPostRedisplay();
 }
 
 int main(int argc, char **argv){
@@ -497,14 +532,13 @@ int main(int argc, char **argv){
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	setup();
 	
-	
 	//callbacks
 	glutDisplayFunc(desenhaTela);
+	glutIdleFunc(fazCair);
 	glutReshapeFunc(ajustaTela);
 	glutKeyboardFunc(teclasJogo);
 	glutSpecialFunc(teclasEspeciais);
 	glutSpecialUpFunc(pressionaTecla);
-	glutIdleFunc(fazCair);
 	
 
 	glutMainLoop();

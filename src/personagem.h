@@ -2,6 +2,7 @@ struct Personagem{
 	float x;
 	float y;
 	int tamanho;
+	float velocidade;
 };
 
 #define LULA 1
