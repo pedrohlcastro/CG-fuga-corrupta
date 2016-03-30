@@ -2,20 +2,20 @@ CC=g++
 all:arquivos
 
 arquivos: main.o inimigos.o desenho.o personagem.o
-	$(CC) main.o inimigos.o desenho.o personagem.o -o executavel -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
+	$(CC) main.o inimigos.o desenho.o personagem.o -o executavel -Iincludes -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
 	@echo "\nCRIADO COM SUCESSO UTILIZE MAKE RUN PARA RODAR\n"
 
 main.o: main.cpp
-	$(CC) -o main.o -c main.cpp -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
+	$(CC) -o main.o -c main.cpp -Iincludes -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
 
 inimigos.o: inimigos.cpp
-	$(CC) -o inimigos.o -c inimigos.cpp -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
+	$(CC) -o inimigos.o -c inimigos.cpp -Iincludes -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
 
 desenho.o: desenho.cpp
-	$(CC) -o desenho.o -c desenho.cpp -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
+	$(CC) -o desenho.o -c desenho.cpp -Iincludes -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
 
 personagem.o: personagem.cpp
-	$(CC) -o personagem.o -c personagem.cpp -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
+	$(CC) -o personagem.o -c personagem.cpp -Iincludes -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
 	
 run:
 	./executavel
