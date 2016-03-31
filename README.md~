@@ -9,10 +9,8 @@ TP01- CG- CEFET/MG 01/2016
 
 <h2>BLIBLIOTECAS E COMO RODAR:</h2>
 
-<h4>COMPILANDO E RODANDO:</h4>
-
 FORAM USADAS AS BIBLIOTECAS GLEW,FREEGLUT,SOIL,SFML(AUDIO).
-<h4>PARA ADQUIRIR AS BIBLIOTECAS:</h4>
+<h4>CASO DESEJE ADQUIRIR AS BIBLIOTECAS:</h4>
 	
 	sudo apt-get install build-essential
 	sudo apt-get install freeglut3-dev
@@ -20,8 +18,7 @@ FORAM USADAS AS BIBLIOTECAS GLEW,FREEGLUT,SOIL,SFML(AUDIO).
 	sudo apt-get install libsfml-dev
 	sudo apt-get install libsoil-dev
 
-OU USE 
-	make install -->instala todas bibliotecas acima
+<h4>COMPILANDO E RODANDO:</h4>
 
 PARA RODAR O JOGO EM LINUX BASTA SEGUIR OS SEGUINTE PASSOS:
 	

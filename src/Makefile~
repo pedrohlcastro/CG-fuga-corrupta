@@ -1,21 +1,21 @@
 CC=g++
 all:arquivos
 
-arquivos: src/main.o src/inimigos.o src/desenho.o src/personagem.o
-	$(CC) src/main.o src/inimigos.o src/desenho.o src/personagem.o -o executavel -Iincludes -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
+arquivos: main.o inimigos.o desenho.o personagem.o
+	$(CC) main.o inimigos.o desenho.o personagem.o -o executavel -Lincludes -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
 	@echo "\nCRIADO COM SUCESSO UTILIZE MAKE RUN PARA RODAR\n"
 
-main.o: src/main.cpp
-	$(CC) -o src/main.o -c src/main.cpp -Iincludes -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
+main.o: main.cpp
+	$(CC) -o main.o -c main.cpp -Lincludes -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
 
-inimigos.o: src/inimigos.cpp
-	$(CC) -o src/inimigos.o -c src/inimigos.cpp -Iincludes -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
+inimigos.o: inimigos.cpp
+	$(CC) -o inimigos.o -c inimigos.cpp -Lincludes -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
 
-desenho.o: src/desenho.cpp
-	$(CC) -o src/desenho.o -c src/desenho.cpp -Iincludes -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
+desenho.o: desenho.cpp
+	$(CC) -o desenho.o -c desenho.cpp -Lincludes -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
 
-personagem.o: src/personagem.cpp
-	$(CC) -o src/personagem.o -c src/personagem.cpp -Iincludes -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
+personagem.o: personagem.cpp
+	$(CC) -o personagem.o -c personagem.cpp -Lincludes -lSOIL -lGL -lglut -lGLEW -lsfml-audio -lm
 	
 run:
 	./executavel
