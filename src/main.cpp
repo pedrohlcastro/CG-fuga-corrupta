@@ -253,7 +253,7 @@ void fazCair(){
 				inimigo[controleCair[i]].x=personagem.x;
 			}
 			cairInimigo(&indexCair,inimigo,controleCair,i);
-			if(cheat<5 && personagem.x+personagem.tamanho>inimigo[controleCair[i]].x && personagem.x<inimigo[controleCair[i]].x+inimigo[controleCair[i]].tamanho && (personagem.y+personagem.tamanho>inimigo[controleCair[i]].y && personagem.y<inimigo[controleCair[i]].y)){
+			if(telaAtual==JOGO && cheat<5 && personagem.x+personagem.tamanho>inimigo[controleCair[i]].x && personagem.x<inimigo[controleCair[i]].x+inimigo[controleCair[i]].tamanho && (personagem.y+personagem.tamanho>inimigo[controleCair[i]].y && personagem.y<inimigo[controleCair[i]].y)){
 				esquerda=false;
 				direita=false;
 				if(vidas>0){
