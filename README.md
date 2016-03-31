@@ -21,6 +21,7 @@ FORAM USADAS AS BIBLIOTECAS GLEW,FREEGLUT,SOIL,SFML(AUDIO).
 	sudo apt-get install libsoil-dev
 
 OU USE 
+
 	make install -->instala todas bibliotecas acima
 
 PARA RODAR O JOGO EM LINUX BASTA SEGUIR OS SEGUINTE PASSOS:
